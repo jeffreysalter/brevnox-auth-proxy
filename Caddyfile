@@ -17,7 +17,7 @@
 
     @admin host admin.brevnox.com
 handle @admin {
-    @allowed_admin client_ip 24.153.132.11
+    @allowed_admin client_ip 24.153.132.118
     handle @allowed_admin {
         reverse_proxy logto-y7g9:3002
     }
