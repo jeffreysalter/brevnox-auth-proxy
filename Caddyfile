@@ -9,6 +9,11 @@
 }
 
 :10000 {
+    log {
+        output stdout
+        format json
+    }
+
     # Health check for Render
     @health path /healthz
     handle @health {
@@ -28,8 +33,8 @@
             reverse_proxy logto-y7g9:3002
         }
 
-        # Allow your public IP(s)
-        @allowed_admin client_ip 24.153.132.118
+        # Allow your public IP(s) via Cloudflare's real-client-IP header
+        @allowed_admin header Cf-Connecting-Ip 24.153.132.118
         handle @allowed_admin {
             reverse_proxy logto-y7g9:3002
         }
