@@ -27,8 +27,13 @@
 
     @admin host admin.brevnox.com
     handle @admin {
-        # Block any request that has a Cf-Connecting-Ip header but it doesn't match the allowlist.
-        # Requests without the header (internal Render traffic) pass through.
+        # Logto's self-calls come through with User-Agent: node - allow them
+        @internal_self_call header User-Agent node
+        handle @internal_self_call {
+            reverse_proxy logto-y7g9:3002
+        }
+        
+        # Block requests from public internet that aren't from allowlisted IP
         @blocked {
             not header Cf-Connecting-Ip 24.153.132.118
             header Cf-Connecting-Ip *
@@ -37,6 +42,7 @@
             respond "Forbidden" 403
         }
         
+        # Everything else (allowlisted IP, or internal Render traffic without Cf-Connecting-Ip)
         reverse_proxy logto-y7g9:3002
     }
 }
