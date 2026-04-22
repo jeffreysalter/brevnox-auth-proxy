@@ -1,6 +1,11 @@
 {
     auto_https off
     admin off
+    
+    servers {
+        trusted_proxies static private_ranges
+        client_ip_headers X-Forwarded-For
+    }
 }
 
 :10000 {
@@ -16,12 +21,13 @@
     }
 
     @admin host admin.brevnox.com
-handle @admin {
-    @allowed_admin client_ip 24.153.132.118
-    handle @allowed_admin {
-        reverse_proxy logto-y7g9:3002
-    }
-    handle {
-        respond "Forbidden" 403
+    handle @admin {
+        @allowed_admin client_ip 24.153.132.118
+        handle @allowed_admin {
+            reverse_proxy logto-y7g9:3002
+        }
+        handle {
+            respond "Forbidden" 403
+        }
     }
 }
