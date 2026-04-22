@@ -4,17 +4,24 @@
 }
 
 :10000 {
+    # Health check for Render
+    @health path /healthz
+    handle @health {
+        respond "ok" 200
+    }
+
     @auth host auth.brevnox.com
     handle @auth {
         reverse_proxy logto-y7g9:3001
     }
 
     @admin host admin.brevnox.com
-    handle @admin {
+handle @admin {
+    @allowed_admin client_ip 24.153.132.11
+    handle @allowed_admin {
         reverse_proxy logto-y7g9:3002
     }
-
     handle {
-        respond "Not found" 404
+        respond "Forbidden" 403
     }
 }
