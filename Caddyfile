@@ -27,20 +27,16 @@
 
     @admin host admin.brevnox.com
     handle @admin {
-        # Allow Render's internal network (Logto's own self-calls)
-        @internal_admin remote_ip private_ranges
-        handle @internal_admin {
-            reverse_proxy logto-y7g9:3002
+        # Block any request that has a Cf-Connecting-Ip header but it doesn't match the allowlist.
+        # Requests without the header (internal Render traffic) pass through.
+        @blocked {
+            not header Cf-Connecting-Ip 24.153.132.118
+            header Cf-Connecting-Ip *
         }
-
-        # Allow your public IP(s) via Cloudflare's real-client-IP header
-        @allowed_admin header Cf-Connecting-Ip 24.153.132.118
-        handle @allowed_admin {
-            reverse_proxy logto-y7g9:3002
-        }
-
-        handle {
+        handle @blocked {
             respond "Forbidden" 403
         }
+        
+        reverse_proxy logto-y7g9:3002
     }
 }
