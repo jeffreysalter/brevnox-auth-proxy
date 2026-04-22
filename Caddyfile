@@ -6,7 +6,7 @@
 :10000 {
     @auth host auth.brevnox.com
     handle @auth {
-        reverse_proxy logto-y7g9:3001
+        reverse_proxy logto-y7g9:10000
     }
 
     @admin host admin.brevnox.com
