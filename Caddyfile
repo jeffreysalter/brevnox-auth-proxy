@@ -1,0 +1,20 @@
+{
+     auto_https off
+     admin off
+   }
+
+   :10000 {
+     @auth host auth.brevnox.com
+     handle @auth {
+       reverse_proxy logto:3001
+     }
+
+     @admin host admin.brevnox.com
+     handle @admin {
+       reverse_proxy logto:3002
+     }
+
+     handle {
+       respond "Not found" 404
+     }
+   }
