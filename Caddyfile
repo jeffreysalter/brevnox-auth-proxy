@@ -22,10 +22,18 @@
 
     @admin host admin.brevnox.com
     handle @admin {
+        # Allow Render's internal network (Logto's own self-calls)
+        @internal_admin remote_ip private_ranges
+        handle @internal_admin {
+            reverse_proxy logto-y7g9:3002
+        }
+
+        # Allow your public IP(s)
         @allowed_admin client_ip 24.153.132.118
         handle @allowed_admin {
             reverse_proxy logto-y7g9:3002
         }
+
         handle {
             respond "Forbidden" 403
         }
