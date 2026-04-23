@@ -33,15 +33,23 @@
             reverse_proxy logto-y7g9:3002
         }
         
-        # Block requests from public internet that aren't from allowlisted IP
-        @blocked {
-            not header Cf-Connecting-Ip 24.153.132.118
-            header Cf-Connecting-Ip *
-        }
-        handle @blocked {
-            respond "Forbidden" 403
-        }
-        
+        # Allowlisted public IPs coming through Cloudflare
+    @allowed_cf {
+        header Cf-Connecting-Ip 24.153.132.118
+        header Cf-Connecting-Ip 67.11.105.236
+    }
+    handle @allowed_cf {
+        reverse_proxy logto-y7g9:3002
+    }
+
+    # Allow internal Render traffic that has no Cloudflare IP header
+    @internal_no_cf not header Cf-Connecting-Ip *
+    handle @internal_no_cf {
+        reverse_proxy logto-y7g9:3002
+    }
+
+    # Block everything else
+    respond "Forbidden" 403
         # Everything else (allowlisted IP, or internal Render traffic without Cf-Connecting-Ip)
         reverse_proxy logto-y7g9:3002
     }
