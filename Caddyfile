@@ -35,7 +35,7 @@
         
         # Block requests from public internet that aren't from allowlisted IP
         @blocked {
-            not header Cf-Connecting-Ip 24.153.132.118
+            not header Cf-Connecting-Ip 24.153.132.118 67.11.105.236
             header Cf-Connecting-Ip *
         }
         handle @blocked {
